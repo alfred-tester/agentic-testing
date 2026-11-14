@@ -1,3 +1,4 @@
+<!-- agentic-testing:start -->
 # Quality Engineering & Testing Orchestration (TypeScript / JavaScript)
 
 This repository follows a structured, multi-agent Quality Engineering workflow powered by three specialized subagents located in `.claude/agents/`.
@@ -8,7 +9,8 @@ Always delegate testing tasks to the appropriate specialist instead of handling 
 
 1. **`test-architect` (Strategy & Design)**
    - **When to invoke**: Starting a new feature/module test plan, auditing overall test pyramid balance, setting up a new test framework (Vitest, Jest, Playwright, Cypress, CodeceptJS, Supertest, k6, Artillery), refactoring tightly coupled code for testability, or designing CI/CD test pipelines.
-   - **Output**: Risk analysis, test layer breakdown, mocking/contract strategy, and folder architecture.
+   - **Output**: Risk analysis, test layer breakdown, mocking/contract strategy, folder architecture, and an implementation handoff for `test-engineer`.
+   - **Constraint**: Design-only. Never writes or modifies files; all implementation goes to `test-engineer`.
 
 2. **`test-engineer` (Implementation & Execution)**
    - **When to invoke**: Writing new unit, integration, API, E2E, or performance tests; building typed test data factories; fixing failing tests; or implementing the architectural plan produced by `test-architect`.
@@ -16,7 +18,7 @@ Always delegate testing tasks to the appropriate specialist instead of handling 
 
 3. **`test-quality-reviewer` (Read-Only Pre-Merge Audit)**
    - **When to invoke**: Before committing, opening a Pull Request, or after `test-engineer` finishes a large suite.
-   - **Constraint**: Strictly read-only diagnostic audit. If the verdict is `NEEDS_IMPROVEMENT`, route the blocking findings back to `test-engineer` for remediation.
+   - **Constraint**: Strictly read-only diagnostic audit. If the verdict is `NEEDS_IMPROVEMENT`, route the blocking findings back to `test-engineer` for remediation (at most 3 review rounds; then report unresolved findings). `APPROVE` requires zero Critical/High issues and a passing type-check and test run.
 
 ## Standard End-to-End QA Workflow
 
@@ -33,3 +35,4 @@ For major features or new test suites, execute this sequence:
 - **Runtime Contract Validation**: API tests (Supertest, Playwright API, CodeceptJS `REST`, PactumJS) must validate response schemas at runtime (Zod, Joi, Ajv, or `JSONResponse`).
 - **Performance Thresholds**: Load tests (k6, Artillery, Autocannon) must define explicit `p95`/`p99` latency and error-rate thresholds.
 
+<!-- agentic-testing:end -->

@@ -20,12 +20,14 @@ Follow these three sequential phases strictly using the specialized subagents in
 
 ### Phase 3: Read-Only Pre-Merge Audit (`test-quality-reviewer`)
 1. Invoke the `test-quality-reviewer` subagent to audit all newly created or modified test files.
-2. **Self-Correction Loop**: If the reviewer returns `NEEDS_IMPROVEMENT` with any **Critical** or **High** issues, pass those specific findings back to `test-engineer` to fix and re-run the tests, then verify again.
+2. **Self-Correction Loop**: If the reviewer returns `NEEDS_IMPROVEMENT`, pass its **Critical** and **High** findings back to `test-engineer` to fix and re-run the tests, then invoke `test-quality-reviewer` again.
+3. **Iteration Limit**: Run at most **3** review rounds. If the verdict is still `NEEDS_IMPROVEMENT` after the third round, stop the loop and report the unresolved findings instead of continuing.
 
 ### Final Deliverable
-Once `test-quality-reviewer` issues an **APPROVE** verdict, present a concise executive summary of:
+When `test-quality-reviewer` issues an **APPROVE** verdict (or the iteration limit is reached), present a concise executive summary of:
 - The test strategy applied
 - Files created/modified
 - Test execution and type-check status
-- Final quality audit verdict
+- Final quality audit verdict and number of review rounds
+- Remaining findings: Medium/Low suggestions, plus any unresolved Critical/High issues if the limit was reached
 

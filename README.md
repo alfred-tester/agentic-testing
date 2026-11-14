@@ -14,16 +14,16 @@ flowchart LR
     B -->|Test Strategy & Risk Plan| C[2. test-engineer]
     C -->|Type-Safe Code + Execution| D[3. test-quality-reviewer]
     D -->|APPROVE| E[✅ Production-Ready Suite]
-    D -->|NEEDS_IMPROVEMENT| C
+    D -->|NEEDS_IMPROVEMENT<br/>max 3 rounds| C
 ```
 
 ### The Subagent Roster
 
 | Subagent | Role | Responsibilities | Permissions |
 | :--- | :--- | :--- | :--- |
-| **`test-architect`** | **Strategy & Design** | Inspects `package.json` & `tsconfig.json`, assesses risks, defines test pyramid layers, contract rules, and performance SLOs. | Read / Write / Bash |
+| **`test-architect`** | **Strategy & Design** | Inspects `package.json` & `tsconfig.json`, assesses risks, defines test pyramid layers, contract rules, and performance SLOs. Hands off a concrete implementation plan (no code). | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash`) |
 | **`test-engineer`** | **Implementation & Execution** | Generates strictly-typed tests, builders, and page/step objects. Runs `tsc --noEmit` and executes suites until green. | Read / Write / Bash |
-| **`test-quality-reviewer`** | **Pre-Merge QA Audit** | Audits test code for flakiness (`waitForTimeout`, unawaited promises), weak assertions, missing edge cases, and `any` types. | **Read-Only** (`Read`, `Grep`, `Bash`) |
+| **`test-quality-reviewer`** | **Pre-Merge QA Audit** | Audits test code for flakiness (`waitForTimeout`, unawaited promises), weak assertions, missing edge cases, and `any` types. Issues `APPROVE` only when there are no Critical/High findings. | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash` for verification only) |
 
 ---
 
@@ -41,7 +41,7 @@ The agents dynamically inspect your repository and adapt to the tools already in
 ## 🚀 Quick Start
 
 ### Option 1: Install in Your Current Project (Recommended for Teams)
-Run this command in the root of your TypeScript/JavaScript repository to install the agents, the `/agentic-testing` skill, `AGENTS.md`, and `CLAUDE.md`:
+Run this command in the root of your TypeScript/JavaScript repository to install the agents, the `/agentic-testing` skill, `AGENTS.md`, and `CLAUDE.md`. Existing `AGENTS.md`/`CLAUDE.md` files are never overwritten: the QA rules are appended to your `AGENTS.md` as a section delimited by `<!-- agentic-testing:start/end -->` markers (re-running the installer updates only that section), and an `@AGENTS.md` import is appended to your `CLAUDE.md` if it doesn't already have one:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh | sh
