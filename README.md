@@ -19,11 +19,21 @@ flowchart LR
 
 ### The Subagent Roster
 
-| Subagent | Role | Responsibilities | Permissions |
-| :--- | :--- | :--- | :--- |
-| **`test-architect`** | **Strategy & Design** | Inspects `package.json` & `tsconfig.json`, assesses risks, defines test pyramid layers, contract rules, and performance SLOs. Hands off a concrete implementation plan (no code). | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash`) |
-| **`test-engineer`** | **Implementation & Execution** | Generates strictly-typed tests, builders, and page/step objects. Runs `tsc --noEmit` and executes suites until green. | Read / Write / Bash |
-| **`test-quality-reviewer`** | **Pre-Merge QA Audit** | Audits test code for flakiness (`waitForTimeout`, unawaited promises), weak assertions, missing edge cases, and `any` types. Issues `APPROVE` only when there are no Critical/High findings. | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash` for verification only) |
+| Subagent | Role | Responsibilities | Permissions | Model |
+| :--- | :--- | :--- | :--- | :--- |
+| **`test-architect`** | **Strategy & Design** | Inspects `package.json` & `tsconfig.json`, assesses risks, defines test pyramid layers, contract rules, and performance SLOs. Hands off a concrete implementation plan (no code). | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash`) | `opus` |
+| **`test-engineer`** | **Implementation & Execution** | Generates strictly-typed tests, builders, and page/step objects. Runs `tsc --noEmit` and executes suites until green. | Read / Write / Bash | `sonnet` |
+| **`test-quality-reviewer`** | **Pre-Merge QA Audit** | Audits test code for flakiness (`waitForTimeout`, unawaited promises), weak assertions, missing edge cases, and `any` types. Issues `APPROVE` only when there are no Critical/High findings. | **Read-Only** (`Read`, `Glob`, `Grep`, `Bash` for verification only) | `sonnet` |
+| *`/agentic-testing` skill (orchestrator)* | *Pipeline Coordination* | Hands the plan between subagents, runs the review loop, and writes the final summary. | Inherits session tools | `sonnet` |
+
+#### Why each model
+
+- **`test-architect` → `opus`**: Strategy needs the deepest reasoning (risk analysis, layer trade-offs, edge cases), and a flawed plan propagates to every later stage. It runs once per pipeline with a short output, so the extra cost stays bounded.
+- **`test-engineer` → `sonnet`**: Highest volume of work: writes code and iterates on type-check/test/fix loops many times. Sonnet is strong at coding while being faster and cheaper per turn. The plan is already defined, so the work is execution rather than open-ended design.
+- **`test-quality-reviewer` → `sonnet`**: Audits against an explicit checklist and verdict rules, and can run up to 3 rounds. Clear criteria make Sonnet reliable here at a lower cost and latency per round.
+- **`/agentic-testing` skill (orchestrator) → `sonnet`**: Only relays results and makes simple loop decisions; the hard reasoning happens in the subagents. Pinning it to `sonnet` keeps cost predictable regardless of the model your session uses.
+
+Models are set with aliases (`opus`, `sonnet`), so each one resolves to the latest version of that family. Using `opus` requires a plan with Opus access. To change a model, edit the `model:` field in the agent or skill frontmatter (`inherit` uses your session's model).
 
 ---
 

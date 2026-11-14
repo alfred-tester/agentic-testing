@@ -2,6 +2,7 @@
 name: agentic-testing
 description: Executes the full 3-stage agentic QA pipeline (test-architect -> test-engineer -> test-quality-reviewer) to design, implement, run, and audit automated tests in TypeScript/JavaScript. Use when asked to create a comprehensive test suite, build QA coverage for a module/endpoint, or run a complete end-to-end testing workflow.
 argument-hint: [target-file-or-module-or-feature]
+model: sonnet
 ---
 
 Execute the complete Quality Engineering workflow for: **$ARGUMENTS**
