@@ -16,7 +16,7 @@ Follow these three sequential phases strictly using the specialized subagents in
 ### Phase 2: Implementation & Execution (`test-engineer`)
 1. Pass the architectural plan from Phase 1 to the `test-engineer` subagent.
 2. Have it implement the typed test factories/builders, API/UI helpers, and test suites following strict TypeScript rules (zero `any`, zero fixed sleeps).
-3. Ensure `test-engineer` runs `tsc --noEmit` and executes the new test suite until all tests pass.
+3. Ensure `test-engineer` runs `tsc --noEmit` and executes the new test suite until all tests pass. Genuine bugs found in the source code are kept as expected-failure tests annotated with `FIXME(bug)` (never "fixed" by weakening the test or editing production code).
 
 ### Phase 3: Read-Only Pre-Merge Audit (`test-quality-reviewer`)
 1. Invoke the `test-quality-reviewer` subagent to audit all newly created or modified test files.
@@ -29,5 +29,6 @@ When `test-quality-reviewer` issues an **APPROVE** verdict (or the iteration lim
 - Files created/modified
 - Test execution and type-check status
 - Final quality audit verdict and number of review rounds
+- Known source bugs (`FIXME(bug)` tests) with location and severity
 - Remaining findings: Medium/Low suggestions, plus any unresolved Critical/High issues if the limit was reached
 

@@ -28,6 +28,7 @@ Before issuing a review:
 - **Tautological / Weak Assertions**: Flag tests that only check `toBeDefined()` or HTTP `200` without verifying payload structure, state mutations, or side effects.
 - **Runtime Schema Validation**: In API tests (Supertest, Playwright API, CodeceptJS `REST`, PactumJS), verify that response contracts are validated at runtime (Zod, Joi, Ajv, or `JSONResponse`), not just assumed via TypeScript type assertions (`as MyType`).
 - **Coverage Gaps**: Cross-reference with the source code to flag untested error paths (400/401/403/404/500), boundary values, and null/empty inputs.
+- **Expected-Failure Tests (`FIXME(bug)`)**: For every `it.fails` / `test.failing` / `test.fail` / skipped test, confirm against the source that the bug is real, that a `FIXME(bug)` comment documents location, expected vs. actual behavior, and severity, that the assertion targets the correct behavior narrowly, and that the observed failure message reported by `test-engineer` for the unmarked run is exactly what the source bug would produce (cross-check it against the source; a missing or mismatching failure message is a High issue). Documented, verified source bugs do **not** block `APPROVE`; list them in the report.
 
 ### 3. TypeScript Strictness & Framework Idioms
 - **Type Safety**: Flag any usage of `any`, `@ts-ignore`, `@ts-expect-error`, or unsafe type casting (`as unknown as T`) inside test files and factories.
@@ -40,7 +41,7 @@ Before issuing a review:
 
 ## Quality Gates & Severity Classification
 Classify every finding by severity:
-- **Critical (Blocks Merge)**: Flaky patterns (fixed sleeps, unawaited promises), false-positive tests (no real assertions), hardcoded secrets/tokens, or broken type safety (`any` / `@ts-ignore`).
+- **Critical (Blocks Merge)**: Flaky patterns (fixed sleeps, unawaited promises), false-positive tests (no real assertions), hardcoded secrets/tokens, or broken type safety (`any` / `@ts-ignore`), or an expected-failure / skipped test without a verified `FIXME(bug)` justification (it hides a broken test or a real failure).
 - **High (Must Fix)**: Missing error/edge-case coverage on critical logic, lack of runtime schema validation on API responses, or brittle UI selectors.
 - **Medium (Should Fix)**: Duplicated test setup that needs a builder/factory, unclear test naming, or missing `afterEach` cleanup.
 - **Low (Nitpick)**: Minor stylistic or structural improvements.
@@ -57,5 +58,6 @@ Structure your audit report strictly as follows:
 3. **Critical & High Issues (Blocking)**: File path, line reference, explanation of risk, and a concrete code snippet showing the fix.
 4. **Medium & Low Suggestions**: Actionable maintainability improvements.
 5. **Missing Scenarios Checklist**: Bullet list of specific edge cases or negative paths that should be added.
+6. **Known Source Bugs**: Every verified `FIXME(bug)` test with its source location and severity (or "None").
 
 

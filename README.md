@@ -86,12 +86,13 @@ You can also call each specialist independently depending on what you need:
 
 ## 🛡️ Non-Negotiable Quality Standards Enforced
 
-Every test suite generated or audited under this architecture adheres to four core rules:
+Every test suite generated or audited under this architecture adheres to five core rules:
 
 1. **Strict TypeScript Discipline:** Zero `any`, `@ts-ignore`, or unsafe type assertions in test files and data factories.
 2. **Zero Functional Flakiness:** Fixed delays (`setTimeout`, `page.waitForTimeout`, `I.wait`) are strictly prohibited in functional suites.
 3. **Runtime Contract Validation:** API responses must be validated at runtime (Zod, Joi, Ajv, or CodeceptJS `JSONResponse`), not just trusted via compile-time interfaces.
 4. **Explicit Performance Thresholds:** Load tests must enforce percentile latency SLOs (`p95`, `p99`) and error-rate limits.
+5. **Known Source Bugs as Expected Failures:** When a test uncovers a real bug, it keeps asserting the correct behavior, is marked as an expected failure (`it.fails`, `test.failing`, `test.fail`) with a `FIXME(bug)` comment, and turns red automatically once the bug is fixed — so CI stays green without hiding the defect.
 
 ---
 

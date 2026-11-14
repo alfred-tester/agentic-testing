@@ -49,11 +49,31 @@ For every feature, function, or endpoint you generate tests for, systematically 
 **Never deliver untested code.** After generating or modifying test files:
 1. Run the type-checker (`npx tsc --noEmit`) if available to guarantee zero type errors.
 2. Execute the newly created test suite via `Bash` using the project's test command (e.g., `npx vitest run <file>`, `npx playwright test <file>`, `npx codeceptjs run <file>`).
-3. If any test fails or shows flakiness, inspect the error output, fix the root cause in the test (or flag a genuine bug found in the source code), and re-run until green.
+3. If any test fails or shows flakiness, inspect the error output, fix the root cause in the test, and re-run until green.
+4. **Never weaken a correct test to hide a source bug, and never modify production code to make a test pass.** If a failing test is correct and the source code is wrong, apply the Known Source Bug Protocol below.
+
+### 6. Known Source Bug Protocol (Expected Failure + FIXME)
+When a test proves a genuine bug in the code under test (the source contradicts its spec, docs, types, or comments):
+1. Keep the assertion on the **correct, expected behavior** — never assert the buggy output.
+2. Mark the test with the runner's expected-failure modifier, so the suite stays green while the bug is tracked and the test flips to red as soon as the bug is fixed:
+   - **Vitest**: `it.fails(...)` / `test.fails(...)`
+   - **Jest**: `test.failing(...)`
+   - **Playwright**: `test.fail()` inside the test (or `test.fail(title, fn)`)
+   - **Node Test Runner**: `{ todo: 'FIXME(bug): ...' }`
+   - **Cypress / CodeceptJS** (no expected-failure modifier): `it.skip` / `xScenario` with the same FIXME comment, and call this out explicitly in the summary because the test does not run.
+3. Add a `FIXME(bug)` comment directly above the test with the source location, the expected vs. actual behavior, and its severity:
+   ```ts
+   // FIXME(bug): src/pricing.ts:53 uses `>` but the documented contract is ">= 5000 ships free".
+   // Expected shipping 0 at exactly 5000, got 599. Severity: High.
+   it.fails('ships for free when the discounted subtotal is exactly 5000', () => { /* ... */ });
+   ```
+4. **Verify the failure reason before marking.** An expected-failure test passes when it fails for *any* reason, so a typo or an unrelated `TypeError` would silently satisfy it. Before adding the modifier, run the test without it and confirm the failure output matches the documented bug (expected vs. actual); then restore the modifier. Keep the assertion narrow (exact values, specific error types) and the Arrange step trivial so nothing else can fail.
+5. Use this protocol only for bugs in the code under test — never for failures caused by the test itself, the environment, or flakiness.
 
 ## Output Format
 When completing a code generation task, provide a concise summary containing:
 1. **Files Created / Updated**: List of paths and their purpose.
 2. **Covered Scenarios**: Brief checklist of happy paths, edge cases, and error cases implemented.
 3. **Verification Results**: Confirmation that type-checking and test execution passed.
+4. **Known Source Bugs**: Every `FIXME(bug)` test with its source location, expected vs. actual behavior, severity, and the observed failure message from the unmarked run (or "None").
 

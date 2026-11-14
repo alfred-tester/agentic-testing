@@ -34,5 +34,6 @@ For major features or new test suites, execute this sequence:
 - **Zero Flakiness**: Fixed sleeps (`setTimeout`, `waitForTimeout`, `I.wait(n)`) are forbidden in functional tests. Always use auto-retrying assertions.
 - **Runtime Contract Validation**: API tests (Supertest, Playwright API, CodeceptJS `REST`, PactumJS) must validate response schemas at runtime (Zod, Joi, Ajv, or `JSONResponse`).
 - **Performance Thresholds**: Load tests (k6, Artillery, Autocannon) must define explicit `p95`/`p99` latency and error-rate thresholds.
+- **Known Source Bugs**: A test that proves a genuine bug in the source keeps asserting the correct behavior, is marked as an expected failure (`it.fails` / `test.failing` / `test.fail`), and carries a `FIXME(bug)` comment with location, expected vs. actual, and severity. Tests are never weakened and production code is never edited to hide the bug.
 
 <!-- agentic-testing:end -->
