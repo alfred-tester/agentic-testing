@@ -40,19 +40,39 @@ The agents dynamically inspect your repository and adapt to the tools already in
 
 ## 🚀 Quick Start
 
-### Option 1: Install in Your Current Project (Recommended for Teams)
-Run this command in the root of your TypeScript/JavaScript repository to install the agents, the `/agentic-testing` skill, `AGENTS.md`, and `CLAUDE.md`. Existing `AGENTS.md`/`CLAUDE.md` files are never overwritten: the QA rules are appended to your `AGENTS.md` as a section delimited by `<!-- agentic-testing:start/end -->` markers (re-running the installer updates only that section), and an `@AGENTS.md` import is appended to your `CLAUDE.md` if it doesn't already have one:
+The installer copies the three subagents and the `/agentic-testing` skill. A **project install** also sets up `AGENTS.md` and `CLAUDE.md`. Existing `AGENTS.md`/`CLAUDE.md` files are never overwritten: the QA rules are appended to your `AGENTS.md` as a section delimited by `<!-- agentic-testing:start/end -->` markers (re-running the installer updates only that section), and an `@AGENTS.md` import is appended to your `CLAUDE.md` if it doesn't already have one.
 
+### Option 1: Install in Your Current Project (Recommended for Teams)
+Run in the root of your TypeScript/JavaScript repository:
+
+**macOS / Linux / WSL / Git Bash**
 ```sh
 curl -fsSL https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh | sh
 ```
 
-### Option 2: Install Globally (Available Across All Your Local Repos)
-Install the subagents and skill into `~/.claude/` so you can invoke them in any project on your machine:
+**Windows (PowerShell)**
+```powershell
+irm https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.ps1 | iex
+```
 
+### Option 2: Install Globally (Available Across All Your Local Repos)
+Install the subagents and skill into your user-level `.claude` folder (`~/.claude` or `%USERPROFILE%\.claude`) so you can invoke them in any project on your machine:
+
+**macOS / Linux / WSL / Git Bash**
 ```sh
 curl -fsSL https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh | sh -s -- --global
 ```
+
+**Windows (PowerShell)**
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.ps1))) -Global
+```
+
+> [!NOTE]
+> **Windows notes**
+> - Works in Windows PowerShell 5.1 (built into Windows 10/11) and PowerShell 7+. No admin rights are needed, and `irm | iex` is not affected by the script execution policy.
+> - Use the installer that matches where you run Claude Code: if Claude Code runs natively on Windows, use the PowerShell command; if it runs inside **WSL**, use the `sh` command inside WSL (a global install from WSL goes to the Linux home, not `%USERPROFILE%`).
+> - Prefer to inspect the script first? Download it, review it, then run it: `irm https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.ps1 -OutFile install.ps1; .\install.ps1` (add `-Global` for a global install; if your execution policy blocks it, run `powershell -ExecutionPolicy Bypass -File .\install.ps1`).
 
 ### Option 3: GitHub Template Repository
 Click **"Use this template"** at the top of this repository to bootstrap a new project with the complete QA orchestration structure pre-configured.
@@ -102,7 +122,8 @@ Every test suite generated or audited under this architecture adheres to five co
 .
 ├── AGENTS.md                          # Universal orchestration & QA standards
 ├── CLAUDE.md                          # Native Claude Code entry point
-├── install.sh                         # One-line installer (local or --global)
+├── install.sh                         # One-line installer for macOS/Linux/WSL/Git Bash (local or --global)
+├── install.ps1                        # One-line installer for Windows PowerShell (local or -Global)
 ├── README.md                          # Community documentation
 └── .claude/
     ├── agents/
