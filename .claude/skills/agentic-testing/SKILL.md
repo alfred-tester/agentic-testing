@@ -7,7 +7,9 @@ model: sonnet
 
 Execute the complete Quality Engineering workflow for: **$ARGUMENTS**
 
-Follow these three sequential phases strictly using the specialized subagents in `.claude/agents/`:
+Follow these three sequential phases strictly using the specialized subagents in `.claude/agents/`.
+
+**Run every subagent in the foreground and wait for its result before continuing.** Never launch them in the background: the whole pipeline must complete within this turn so each phase receives the previous phase's full output.
 
 ### Phase 1: Architecture & Risk Analysis (`test-architect`)
 1. Invoke the `test-architect` subagent targeting **$ARGUMENTS**.
@@ -20,7 +22,7 @@ Follow these three sequential phases strictly using the specialized subagents in
 3. Ensure `test-engineer` runs `tsc --noEmit` and executes the new test suite until all tests pass. Genuine bugs found in the source code are kept as expected-failure tests annotated with `FIXME(bug)` (never "fixed" by weakening the test or editing production code).
 
 ### Phase 3: Read-Only Pre-Merge Audit (`test-quality-reviewer`)
-1. Invoke the `test-quality-reviewer` subagent to audit all newly created or modified test files.
+1. Invoke the `test-quality-reviewer` subagent to audit all newly created or modified test files. Include `test-engineer`'s full report **verbatim** (not a summary) in the reviewer's prompt, especially the Known Source Bugs section with each observed failure message, so the reviewer can cross-check them against the source.
 2. **Self-Correction Loop**: If the reviewer returns `NEEDS_IMPROVEMENT`, pass its **Critical** and **High** findings back to `test-engineer` to fix and re-run the tests, then invoke `test-quality-reviewer` again.
 3. **Iteration Limit**: Run at most **3** review rounds. If the verdict is still `NEEDS_IMPROVEMENT` after the third round, stop the loop and report the unresolved findings instead of continuing.
 
