@@ -91,6 +91,9 @@ Click **"Use this template"** at the top of this repository to bootstrap a new p
 
 ## 💻 Usage Examples
 
+> [!TIP]
+> **See it in action first:** [`examples/demo-shop`](examples/demo-shop) contains the real output of a full pipeline run on a small checkout module: the architect's plan, the generated tests, the reviewer's audit and the final summary, including how a planted bug was caught and documented.
+
 ### 1. Run the Full 3-Stage Pipeline (`/agentic-testing`)
 Use the custom skill inside Claude Code to plan, build, run, and audit a complete test suite:
 
@@ -135,6 +138,8 @@ Every test suite generated or audited under this architecture adheres to five co
 ├── install.sh                         # One-line installer for macOS/Linux/WSL/Git Bash (local or --global)
 ├── install.ps1                        # One-line installer for Windows PowerShell (local or -Global)
 ├── README.md                          # Community documentation
+├── examples/
+│   └── demo-shop/                     # Real pipeline run: source, generated tests, and each agent's output
 └── .claude/
     ├── agents/
     │   ├── test-architect.md          # Role 1: Strategy & Architecture
