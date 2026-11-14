@@ -44,14 +44,14 @@ The agents dynamically inspect your repository and adapt to the tools already in
 Run this command in the root of your TypeScript/JavaScript repository to install the agents, the `/agentic-testing` skill, `AGENTS.md`, and `CLAUDE.md`:
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh](https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh) | sh
+curl -fsSL https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh | sh
 ```
 
 ### Option 2: Install Globally (Available Across All Your Local Repos)
 Install the subagents and skill into `~/.claude/` so you can invoke them in any project on your machine:
 
 ```sh
-curl -fsSL [https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh](https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh) | sh -s -- --global
+curl -fsSL https://raw.githubusercontent.com/alfred-tester/agentic-testing/main/install.sh | sh -s -- --global
 ```
 
 ### Option 3: GitHub Template Repository
