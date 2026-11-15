@@ -17,6 +17,19 @@ flowchart LR
     D -->|NEEDS_IMPROVEMENT<br/>max 3 rounds| C
 ```
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/qa-line-dark.svg">
+  <img src="docs/images/qa-line-light.svg" alt="An isometric inspection line: a carriage carrying a plate of 48 test pins rides two rails past three stations. A drafting head (test-architect) stops above the plate and drops a plan card, a press (test-engineer) stamps the pins while a dial counts the run, and a seating gauge (test-quality-reviewer) lands on the plate only when there are no blocking findings; a second dial counts review rounds, up to three." width="100%">
+</picture>
+
+The same pipeline as a machine. The carriage carries the suite, a plate of 48 test pins, past three stations:
+
+- **`test-architect`**: its lens stops above the plate, because this agent is read-only. It drops a plan card into the carriage's tray.
+- **`test-engineer`**: its press stamps the tests, and the left dial counts them up to green.
+- **`test-quality-reviewer`**: its gauge seats only when there are no Critical or High findings. Otherwise the carriage goes back to the press and the right dial steps one round, up to three.
+
+The two dark pins are the `it.fails` tests from [`examples/demo-shop`](examples/demo-shop), which pin down a real source bug.
+
 ### The Subagent Roster
 
 | Subagent | Role | Responsibilities | Permissions | Model |
@@ -138,6 +151,8 @@ Every test suite generated or audited under this architecture adheres to five co
 ├── install.sh                         # One-line installer for macOS/Linux/WSL/Git Bash (local or --global)
 ├── install.ps1                        # One-line installer for Windows PowerShell (local or -Global)
 ├── README.md                          # Community documentation
+├── docs/
+│   └── images/                        # Pipeline figure (light and dark SVG)
 ├── examples/
 │   └── demo-shop/                     # Real pipeline run: source, generated tests, and each agent's output
 └── .claude/
